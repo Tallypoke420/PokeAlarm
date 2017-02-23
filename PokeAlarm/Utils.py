@@ -148,7 +148,22 @@ def get_move_energy(move_id):
             get_move_energy.info[int(id_)] = j[id_]['energy']
     return get_move_energy.info.get(move_id, 'unkn')
 
-
+def get_color(iv_0):
+    if int(iv_0) < 25:
+        color_ = 0x9d9d9d
+    elif int(iv_0) < 50:
+        color_ = 0xffffff
+    elif int(iv_0) < 81:
+        color_ = 0x1eff00
+    elif int(iv_0) < 90:
+        color_ = 0x0070dd
+    elif int(iv_0) < 100:
+        color_ = 0xa335ee
+    elif int(iv_0) == 100:
+        color_ = 0xff8000
+    else:
+        color_ = 0x4F545C
+    return color_
 
 ########################################################################################################################
 
