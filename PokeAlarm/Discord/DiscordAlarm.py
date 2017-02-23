@@ -4,7 +4,7 @@ import requests
 # 3rd Party Imports
 # Local Imports
 from ..Alarm import Alarm
-from ..Utils import parse_boolean, get_static_map_url
+from ..Utils import parse_boolean, get_color
 
 log = logging.getLogger('Discord')
 try_sending = Alarm.try_sending
@@ -48,7 +48,6 @@ class DiscordAlarm(Alarm):
         # Service Info
         self.__api_key = settings['api_key']
         self.__startup_message = settings.get('startup_message', "True")
-        self.__map = settings.get('map', {})
         self.__statup_list = settings.get('startup_list', "true")
 
         # Set Alerts
@@ -60,8 +59,8 @@ class DiscordAlarm(Alarm):
         if parse_boolean(self.__startup_message):
             args = {
                 'api_key': self.__api_key,
-                'username': 'PokeAlarm',
-                'content': 'PokeAlarm activated! We will alert this channel about pokemon.'
+                'username': "Holy Shit! It's a wild...",
+                'content': 'Hold on to your butts!  Poke_feed is live!'
             }
             self.send_webhook(**args)
         log.info("Discord Alarm initialized.")
@@ -77,8 +76,8 @@ class DiscordAlarm(Alarm):
             'username': settings.get('username', default['username']),
             'icon_url': settings.get('icon_url', default['icon_url']),
             'title': settings.get('title', default['title']), 'url': settings.get('url', default['url']),
-            'body': settings.get('body', default['body']),
-            'map': get_static_map_url(settings.get('map', self.__map))
+			'body': settings.get('body', default['body']),
+			'color': settings.get('color', "<iv_0>")
         }
         return alert
 
@@ -90,8 +89,8 @@ class DiscordAlarm(Alarm):
             'title': replace(alert['title'], info),
             'url': replace(alert['url'], info),
             'description': replace(alert['body'], info),
-            'thumbnail': replace(alert['icon_url'], info),
-            'attachments': replace(alert['map'], {'lat': info['lat'], 'lng': info['lng']})
+			'color': get_color(replace(alert['color'], info)),
+            'thumbnail': replace(alert['icon_url'], info)
         }
         try_sending(log, self.connect, "Discord", self.send_webhook, args)
 
@@ -110,8 +109,8 @@ class DiscordAlarm(Alarm):
                     'title': args['title'],
                     'url': args['url'],
                     'description': args['description'],
+					'color': args['color'],
                     'thumbnail': {'url': args['thumbnail']},
-                    'image': {'url': args['attachments']}
                 }]
             }
         try:
